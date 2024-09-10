@@ -48,7 +48,7 @@ import shutil
 
 def load_data(filepath):
     # 加载数据
-    df = pd.read_excel(r'A:/container/aaa.xlsx')
+    df = pd.read_excel(r'D:/container/aaa.xlsx')
     return df.iloc[:, :19]
 
 def filter_data(df, buyer_name):
@@ -73,7 +73,7 @@ def main():
     st.title('拆分供应商数据小工具')
 
     # 定义文件夹路径
-    folder_path = "A:/container"
+    folder_path = "D:/container"
     # folder_path = 'A:/Desktop/cma'
 
 
