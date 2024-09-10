@@ -48,7 +48,7 @@ import shutil
 
 def load_data(filepath):
     # 加载数据
-    df = pd.read_excel(filepath)
+    df = pd.read_excel(os.path.join(filepath, 'aaa.xlxs'))
     return df.iloc[:, :19]
 
 def filter_data(df, buyer_name):
@@ -78,7 +78,7 @@ def main():
 
 
     # 清空文件夹
-    clear_directory(folder_path)
+    #clear_directory(folder_path)
 
     # 文件上传
     # uploaded_file = st.file_uploader("选择一个文件", type=['xlsx'])
