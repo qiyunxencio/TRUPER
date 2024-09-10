@@ -48,7 +48,7 @@ import shutil
 
 def load_data(filepath):
     # 加载数据
-    df = pd.read_excel(os.path.join(filepath, "aaa.xlsx"))
+    df = pd.read_excel(os.path.join(filepath, 'aaa.xlsx'))
     return df.iloc[:, :19]
 
 def filter_data(df, buyer_name):
