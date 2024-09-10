@@ -81,11 +81,11 @@ def main():
     clear_directory(folder_path)
 
     # 文件上传
-    uploaded_file = st.file_uploader("选择一个文件", type=['xlsx'])
-    if uploaded_file is not None:
+    # uploaded_file = st.file_uploader("选择一个文件", type=['xlsx'])
+    #if uploaded_file is not None:
         # 读取数据
-        df = load_data(uploaded_file)
-
+    df = load_data(uploaded_file)
+    if df:
         # 用户输入
         buyer_name = st.text_input("输入采购名称进行筛选 (例如: Nancy)", "Nancy")
         if buyer_name:
