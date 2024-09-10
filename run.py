@@ -73,7 +73,7 @@ def main():
     st.title('拆分供应商数据小工具')
 
     # 定义文件夹路径
-    folder_path = "A:/container/"
+    folder_path = "A:\container"
     # folder_path = 'A:/Desktop/cma'
 
 
