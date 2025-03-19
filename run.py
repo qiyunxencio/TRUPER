@@ -1,63 +1,73 @@
 import streamlit as st
-import pandas as pd
+import csv
 import zipfile
 import os
 
 # 标题
-st.title("拆分供应商数据小工具")
-st.write("上传 Excel 文件，按工厂分组并生成压缩包。")
+st.title("工厂分组工具")
+st.write("上传 CSV 文件，按工厂分组并生成压缩包。")
 
 # 文件上传组件
-uploaded_file = st.file_uploader("上传 Excel 文件", type=["xlsx"])
+uploaded_file = st.file_uploader("上传 CSV 文件", type=["csv"])
 
 if uploaded_file is not None:
-    # 读取 Excel 文件
-    df = pd.read_excel(uploaded_file)
-    df = df.iloc[:, :19]
-    
-    # 筛选包含 "Nancy" 的行
-    df1 = df.loc[df['Buyer'].str.contains('Nancy', na=False, case=False)]
-    
-    # 按工厂分组
-    grouped = df1.groupby('FACTORY')
-    SUM = 0
+    try:
+        # 读取 CSV 文件
+        reader = csv.DictReader(uploaded_file.read().decode('utf-8').splitlines())
+        data = list(reader)
+        
+        # 筛选包含 "Nancy" 的行
+        filtered_data = [row for row in data if 'Nancy' in row.get('Buyer', '')]
+        
+        # 按工厂分组
+        grouped_data = {}
+        for row in filtered_data:
+            factory = row.get('FACTORY', '')
+            if factory not in grouped_data:
+                grouped_data[factory] = []
+            grouped_data[factory].append(row)
+        
+        SUM = sum(len(group) for group in grouped_data.values())
 
-    # 创建临时文件夹
-    temp_dir = "D:/container"
-    os.makedirs(temp_dir, exist_ok=True)
-    zip_filename = os.path.join(temp_dir, "FACTORY_Groups.zip")
+        # 创建临时文件夹
+        temp_dir = "temp_factory_groups"
+        os.makedirs(temp_dir, exist_ok=True)
+        zip_filename = os.path.join(temp_dir, "FACTORY_Groups.zip")
 
-    # 创建 zip 文件
-    with zipfile.ZipFile(zip_filename, 'w') as zipf:
-        for factory, group in grouped:
-            filename = f"{factory}.xlsx"
-            SUM += group.shape[0]
-            st.write(f"{factory}: {group.shape[0]} 条")
-            
-            # 创建临时 Excel 文件
-            temp_filename = os.path.join(temp_dir, filename)
-            with pd.ExcelWriter(temp_filename) as writer:
-                group.to_excel(writer, index=False)
-            
-            # 将文件添加到 zip 文件中
-            zipf.write(temp_filename, filename)
-            
-            # 删除临时文件
-            os.remove(temp_filename)
+        # 创建 zip 文件
+        with zipfile.ZipFile(zip_filename, 'w') as zipf:
+            for factory, group in grouped_data.items():
+                filename = f"{factory}.csv"
+                st.write(f"{factory}: {len(group)} 条")
+                
+                # 创建临时 CSV 文件
+                temp_filename = os.path.join(temp_dir, filename)
+                with open(temp_filename, 'w', newline='', encoding='utf-8') as f:
+                    writer = csv.DictWriter(f, fieldnames=group[0].keys())
+                    writer.writeheader()
+                    writer.writerows(group)
+                
+                # 将文件添加到 zip 文件中
+                zipf.write(temp_filename, filename)
+                
+                # 删除临时文件
+                os.remove(temp_filename)
 
-    st.success(f"一共有 {SUM} 条记录。")
-    st.success("所有分组已成功保存到单独的 Excel 文件中，并压缩到一个 zip 包中。")
+        st.success(f"一共有 {SUM} 条记录。")
+        st.success("所有分组已成功保存到单独的 CSV 文件中，并压缩到一个 zip 包中。")
 
-    # 提供下载链接
-    with open(zip_filename, "rb") as f:
-        st.download_button(
-            label="下载压缩包",
-            data=f,
-            file_name="FACTORY_Groups.zip",
-            mime="application/zip"
-        )
+        # 提供下载链接
+        with open(zip_filename, "rb") as f:
+            st.download_button(
+                label="下载压缩包",
+                data=f,
+                file_name="FACTORY_Groups.zip",
+                mime="application/zip"
+            )
 
-    # 删除临时文件夹
-    os.rmdir(temp_dir)
+        # 删除临时文件夹
+        os.rmdir(temp_dir)
+    except Exception as e:
+        st.error(f"发生错误: {e}")
 else:
-    st.info("请上传一个 Excel 文件。")
+    st.info("请上传一个 CSV 文件。")
