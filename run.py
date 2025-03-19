@@ -33,8 +33,8 @@ if uploaded_file is not None:
         temp_dir = "temp_factory_groups"
         os.makedirs(temp_dir, exist_ok=True)
 
-        # 将 ZIP 文件保存到 E:/container 文件夹中
-        output_dir = "E:/container"
+        # 将 ZIP 文件保存到 D:/container 文件夹中
+        output_dir = "D:/container"
         os.makedirs(output_dir, exist_ok=True)  # 确保文件夹存在
         zip_filename = os.path.join(output_dir, "FACTORY_Groups.zip")
 
