@@ -58,7 +58,6 @@ if uploaded_file is not None:
                 os.remove(temp_filename)
 
         st.success(f"一共有 {SUM} 条记录。")
-        st.success(f"所有分组已成功保存到单独的 CSV 文件中，并压缩到 {zip_filename} 中。")
 
         # 提供下载链接
         with open(zip_filename, "rb") as f:
