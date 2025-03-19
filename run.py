@@ -32,7 +32,11 @@ if uploaded_file is not None:
         # 创建临时文件夹
         temp_dir = "temp_factory_groups"
         os.makedirs(temp_dir, exist_ok=True)
-        zip_filename = os.path.join(temp_dir, "FACTORY_Groups.zip")
+
+        # 将 ZIP 文件保存到 E:/container 文件夹中
+        output_dir = "E:/container"
+        os.makedirs(output_dir, exist_ok=True)  # 确保文件夹存在
+        zip_filename = os.path.join(output_dir, "FACTORY_Groups.zip")
 
         # 创建 zip 文件
         with zipfile.ZipFile(zip_filename, 'w') as zipf:
@@ -54,7 +58,7 @@ if uploaded_file is not None:
                 os.remove(temp_filename)
 
         st.success(f"一共有 {SUM} 条记录。")
-        st.success("所有分组已成功保存到单独的 CSV 文件中，并压缩到一个 zip 包中。")
+        st.success(f"所有分组已成功保存到单独的 CSV 文件中，并压缩到 {zip_filename} 中。")
 
         # 提供下载链接
         with open(zip_filename, "rb") as f:
